@@ -5,7 +5,7 @@ struct FCFS {
     int arrival, burst;
 };
 
-// finding the waiting time and turnaround time
+// finding the waiting time and turnaround time - GIRIBALA
 void findTimes (struct FCFS list[], int wt[], int tt[], int n) {
     wt[0] = 0;
     
@@ -19,7 +19,7 @@ void findTimes (struct FCFS list[], int wt[], int tt[], int n) {
     }
 }
 
-// finding avg wt and tt
+// finding avg wt and tt - GIRIBALA
 void findAvg (struct FCFS list[], int n) {
     int wt[n], tt[n];
     float total_wt = 0, total_tt = 0;
@@ -30,7 +30,7 @@ void findAvg (struct FCFS list[], int n) {
     for (int i = 0; i < n; i++) {
         total_wt += wt[i];
         total_tt += tt[i];
-        printf("\n  %c      %d    %d    %d   %d\n", list[i].name, list[i].arrival, list[i].burst, wt[i], tt[i]);
+        printf("\n  %c      %d    %d    %d   %d\n", list[i].name, list[i].arrival, list[i].burst, wt[i], tt[i]); (GIRIBALA)
     }
 
     printf("\nAverage Waiting Time = %.2f\n", total_wt / n);
@@ -38,6 +38,7 @@ void findAvg (struct FCFS list[], int n) {
 }
 
 int main() {
+    printf ("Giribala Arun CSB\n");
     int n;
 
     printf("Enter the number of processes: ");
