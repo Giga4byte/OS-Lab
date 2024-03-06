@@ -30,7 +30,7 @@ void findAvg (struct FCFS list[], int n) {
     for (int i = 0; i < n; i++) {
         total_wt += wt[i];
         total_tt += tt[i];
-        printf("\n  %c      %d    %d    %d   %d\n", list[i].name, list[i].arrival, list[i].burst, wt[i], tt[i]); (GIRIBALA)
+        printf("\n  %c      %d    %d    %d   %d\n", list[i].name, list[i].arrival, list[i].burst, wt[i], tt[i]);
     }
 
     printf("\nAverage Waiting Time = %.2f\n", total_wt / n);
