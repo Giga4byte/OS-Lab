@@ -1,3 +1,5 @@
+// day5FCFS.c
+
 #include <stdio.h>
 
 struct FCFS {
@@ -5,26 +7,28 @@ struct FCFS {
     int arrival, burst;
 };
 
-// finding the waiting time and turnaround time - GIRIBALA
-void findTimes (struct FCFS list[], int wt[], int tt[], int n) {
+// finding the waiting time and turnaround time
+void findTimes (struct FCFS list[], int wt[], int tt[], int ct[], int n) {
     wt[0] = 0;
     
     for (int i=1; i<n; i++) {
-        int wait = wt[i - 1] + list[i - 1].burst - list[i].arrival; 
-        wt[i] = (wait > 0) ? wait : 0;
+    	ct[0] = list[0].burst;
+    	ct[i] = ct[i-1] + list[i].burst;
+        wt[i] = ct[i-1] - list[i].arrival; 
     }
     
     for (int i=0; i<n; i++) {
-         tt[i] = list[i].burst + wt[i];
+    	 tt[0] = list[0].burst;
+         tt[i] = tt[i-1] + list[i-1].arrival + list[i].burst - list[i].arrival;
     }
 }
 
-// finding avg wt and tt - GIRIBALA
+// finding avg wt and tt
 void findAvg (struct FCFS list[], int n) {
-    int wt[n], tt[n];
+    int wt[n], tt[n], ct[n];
     float total_wt = 0, total_tt = 0;
 
-    findTimes (list, wt, tt, n);
+    findTimes (list, wt, tt, ct, n);
 
     printf ("Process  AT   BT   WT  TT");
     for (int i = 0; i < n; i++) {
