@@ -1,129 +1,77 @@
-#include <stdio.h>
-
-// Function to find the waiting time for all processes
-void findWaitingTime(int processes[], int n, int bt[], int wt[], int quantum)
-{
-    // Make a copy of burst times bt[] to store remaining
-    // burst times.
-    int rem_bt[n];
-    for (int i = 0; i < n; i++)
-        rem_bt[i] = bt[i];
-
-    int t = 0; // Current time
-
-    // Keep traversing processes in round robin manner
-    // until all of them are not done.
-    while (1)
-    {
-        int done = 1;
-
-        // Traverse all processes one by one repeatedly
-        for (int i = 0; i < n; i++)
-        {
-            // If burst time of a process is greater than 0
-            // then only need to process further
-            if (rem_bt[i] > 0)
-            {
-                done = 0; // There is a pending process
-
-                if (rem_bt[i] > quantum)
-                {
-                    // Increase the value of t i.e. shows
-                    // how much time a process has been processed
-                    t += quantum;
-
-                    // Decrease the burst_time of current process
-                    // by quantum
-                    rem_bt[i] -= quantum;
-                }
-                else
-                {
-                    // Increase the value of t i.e. shows
-                    // how much time a process has been processed
-                    t = t + rem_bt[i];
-
-                    // Waiting time is current time minus time
-                    // used by this process
-                    wt[i] = t - bt[i];
-
-                    // As the process gets fully executed
-                    // make its remaining burst time = 0
-                    rem_bt[i] = 0;
-                }
-            }
-        }
-
-        // If all processes are done
-        if (done == 1)
-            break;
-    }
-}
-
-// Function to calculate turn around time
-void findTurnAroundTime(int processes[], int n, int bt[], int wt[], int tat[])
-{
-    // calculating turnaround time by adding
-    // bt[i] + wt[i]
-    for (int i = 0; i < n; i++)
-        tat[i] = bt[i] + wt[i];
-}
-
-// Function to calculate average time
-void findavgTime(int processes[], int n, int bt[], int quantum)
-{
-    int wt[n], tat[n], total_wt = 0, total_tat = 0;
-
-    // Function to find waiting time of all processes
-    findWaitingTime(processes, n, bt, wt, quantum);
-
-    // Function to find turn around time for all processes
-    findTurnAroundTime(processes, n, bt, wt, tat);
-
-    // Display processes along with all details
-    printf("PN\t BT \t WT \tTAT\n");
-
-    // Calculate total waiting time and total turn
-    // around time
-    for (int i = 0; i < n; i++)
-    {
-        total_wt = total_wt + wt[i];
-        total_tat = total_tat + tat[i];
-        printf(" %d \t\t %d \t %d \t\t %d\n", i + 1, bt[i],
-               wt[i], tat[i]);
-    }
-
-    printf("Average waiting time = %f",
-           (float)total_wt / (float)n);
-    printf("\nAverage turn around time = %f",
-           (float)total_tat / (float)n);
-}
-
-// Driver code
+#include<stdio.h>
+ 
 int main()
 {
-    int n, quantum;
-
-    // process id's
-    printf("Enter the number of processes: ");
+      /*int i, limit, total = 0, x, counter = 0, time_quantum;
+      int wait_time = 0, turnaround_time = 0, arrival_time[10], burst_time[10], temp[10];
+      float average_wait_time, average_turnaround_time;*/
+    int n, x;
+    printf("Enter number of process: ");
     scanf("%d", &n);
-
-    int processes[n];
-
-    // Burst time of all processes
-    int burst_time[n];
-    int arrival_time[n];
-
-    for (int i = 0; i < n; i++)
-    {
-        printf("Enter arrival and burst time for P%d: ", i + 1);
-        scanf("%d %d", &arrival_time[i], &burst_time[i]);
-        processes[i] = i + 1;
+    x = n;
+    printf ("\n");
+      
+    int arrival_time[n], burst_time[n], temp[n];
+    for(int i = 0; i < n; i++) {
+        printf("DETAILS OF PROCESS %d\n", i + 1);
+        printf("Arrival and Burst Time: ");
+        scanf("%d%d", &arrival_time[i], &burst_time[i]);
+        temp[i] = burst_time[i];
     }
+ 
+    int time_quantum;
+    printf("\nEnter Time Quantum: ");
+    scanf("%d", &time_quantum);
+    
+    int counter = 0, wait_time = 0, turnaround_time = 0;
+    float average_wait_time = 0, average_turnaround_time = 0;
+    int i, total;
+    
+    printf("\nPID\t\tBurst Time\t Turnaround Time\t Waiting Time\n");
+    for (total = 0, i = 0; x != 0;) {
+// checking if the burst time of the process is <=QT or >QT
+        if (temp[i] <= time_quantum && temp[i] > 0) {
+            total = total + temp[i];
+            temp[i] = 0;
+            counter = 1;
+        } else if (temp[i] > 0) {
+            temp[i] = temp[i] - time_quantum;
+            total = total + time_quantum;
+        }
 
-    // Time quantum
-    printf("Enter the time quantum: ");
-    scanf("%d", &quantum);
-
-    findavgTime(processes, n, burst_time, quantum);
+// condition in case the process is "complete"
+        if(temp[i] == 0 && counter == 1) {
+            x--;
+            
+            // process is printed in the ascending order of completion
+            printf("\nP%d\t\t   %d\t\t      %d\t\t\t    %d", i + 1, burst_time[i], total - arrival_time[i], total - arrival_time[i] - burst_time[i]);
+            
+            // calculate the total wait and turnaround time
+            wait_time = wait_time + total - arrival_time[i] - burst_time[i];
+            turnaround_time = turnaround_time + total - arrival_time[i];
+            
+            // reset counter
+            counter = 0;
+        }
+        
+        if (i == n - 1) {
+            i = 0;
+        } else if (arrival_time[i + 1] <= total) {
+            i++;
+        } else {
+            i = 0;
+        }
+    }
+ 
+    average_wait_time = wait_time / n;
+    average_turnaround_time = turnaround_time / n;
+    printf("\nAverage Waiting Time: %f", average_wait_time);
+    printf("\nAverage Turnaround Time: %f\n", average_turnaround_time);
+    
     return 0;
 }
+
+/*
+FORMULA FOR WAITING TIME USED HERE:
+    current_wt = process_total - arrival - burst;
+*/
