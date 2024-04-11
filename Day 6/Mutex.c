@@ -1,3 +1,4 @@
+/* doesn't use semaphore, and is not the solution to the question in the lab */
 #include <stdio.h>
 #include <stdlib.h>
 
