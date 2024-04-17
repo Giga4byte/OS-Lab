@@ -1,92 +1,78 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
-#include <semaphore.h>
+/* doesn't satisfy a few conditions of the code to be implemented in the lab, don't copy. It's wrong */
 
-#define QUEUE_SIZE 5
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+#include<semaphore.h>
+#include<unistd.h>
 
-int queue[QUEUE_SIZE];
-int front = 0, rear = -1, itemCount = 0;
+#define SIZE_QUEUE 10
 
-sem_t mutex, full, empty;
+int in = 0;
+int out = 0;
+int queue[SIZE_QUEUE];
 
+sem_t mutex, empty, full;
+
+// Function to generate a random number
 int generateRandomNumber() {
     srand(time(NULL));
+    sleep(rand() % 2); // Sleep for a random time
     return rand();
 }
 
-void initSemaphores() {
-    sem_init(&mutex, 0, 1);
-    sem_init(&full, 0, 0);
-    sem_init(&empty, 0, QUEUE_SIZE);
-}
+void producer(int item) {
+    sem_wait(&empty);
+    sem_wait(&mutex);
 
-void producer() {
-    while (1) {
-        int item = generateRandomNumber();
-        if (item % 2 != 0) { // Producer's turn
-            sem_wait(&empty); // Wait for an empty slot in the queue
-            sem_wait(&mutex); // Lock the mutex for critical section
-            rear = (rear + 1) % QUEUE_SIZE;
-            queue[rear] = item;
-            printf("Produced item: %d\n", item);
-            sem_post(&mutex); // Release the mutex
-            sem_post(&full);  // Signal that the queue is no longer empty
-            sleep(1); // Sleep for a short time
-        }
+    if (((in + 1) % SIZE_QUEUE) != out) {
+        queue[in] = item;
+        in = (in + 1) % SIZE_QUEUE;
+        printf("Producer produced: %d\n", item);
+    } else {
+        printf("Queue is full!\n");
     }
+
+    sem_post(&mutex);
+    sem_post(&full);
 }
 
 void consumer() {
-    while (1) {
-        int item = generateRandomNumber();
-        if (item % 2 == 0) { // Consumer's turn
-            sem_wait(&full);  // Wait for a full slot in the queue
-            sem_wait(&mutex); // Lock the mutex for critical section
-            int consumedItem = queue[front];
-            front = (front + 1) % QUEUE_SIZE;
-            printf("Consumed item: %d\n", consumedItem);
-            sem_post(&mutex); // Release the mutex
-            sem_post(&empty); // Signal that the queue is no longer full
-            sleep(1); // Sleep for a short time
-        }
+    sem_wait(&full);
+    sem_wait(&mutex);
+
+    if (in != out) {
+        int item = queue[out];
+        out = (out + 1) % SIZE_QUEUE;
+        printf("Consumer consumed: %d\n", item);
+    } else {
+        printf("Queue is empty\n");
     }
+
+    sem_post(&mutex);
+    sem_post(&empty);
 }
 
 int main() {
-    initSemaphores();
+    sem_init(&mutex, 0, 1);
+    sem_init(&empty, 0, SIZE_QUEUE);
+    sem_init(&full, 0, 0);
 
-    // Create child processes for producer and consumer
-    pid_t pid_producer = fork();
-    if (pid_producer == 0) {
-        // Child process (producer)
-        producer();
-    } else if (pid_producer > 0) {
-        // Parent process
-        pid_t pid_consumer = fork();
-        if (pid_consumer == 0) {
-            // Child process (consumer)
+    for (int i = 0; i < 10; i++) {
+        int x = generateRandomNumber();
+        printf("|%d|", x);
+        if (x % 2 == 0) {
+            printf(" CONSUMER'S TURN\n");
             consumer();
-        } else if (pid_consumer > 0) {
-            // Parent process
-            // Wait for child processes to finish
-            wait(NULL);
-            wait(NULL);
         } else {
-            // Error occurred while forking
-            perror("Error forking consumer process");
-            exit(EXIT_FAILURE);
+            printf(" PRODUCER'S TURN\n");
+            producer(x);
         }
-    } else {
-        // Error occurred while forking
-        perror("Error forking producer process");
-        exit(EXIT_FAILURE);
     }
 
     sem_destroy(&mutex);
-    sem_destroy(&full);
     sem_destroy(&empty);
+    sem_destroy(&full);
 
     return 0;
 }
