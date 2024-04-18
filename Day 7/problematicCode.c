@@ -1,3 +1,4 @@
+/* safe state sheri ayi, unsafe state sheri ayit illa. So don't blindly copy - esp batch 2, she'll ask about it */
 #include <stdio.h>
 
 int main() {
