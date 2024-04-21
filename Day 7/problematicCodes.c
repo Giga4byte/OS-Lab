@@ -1,3 +1,4 @@
+/* safe state ayit alla test case vanne. batch 2, don't copy blindly. miss chodikkum */
 #include <stdio.h>
 
 int main() {
