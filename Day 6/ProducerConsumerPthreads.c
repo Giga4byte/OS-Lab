@@ -8,7 +8,7 @@
 #define PRODUCERS 2
 #define CONSUMERS 2
 
-int buffer[BUFFER_SIZE];
+int buffer[SIZE];
 int in = 0, out = 0, counter = 0;
 sem_t mutex, full, empty;
 
