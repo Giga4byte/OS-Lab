@@ -56,7 +56,7 @@ int main() {
                     }
                 }
                 if (flag == 0) {
-                    ans[ind++] = i;
+                    ans[ind] = ++i;
                     for (j = 0; j < m; j++) {
                         available[j] += alloc[i][j];
                     }
@@ -81,7 +81,7 @@ int main() {
         for (i = 0; i < n - 1; i++) {
             printf(" P%d ->", ans[i]);
         }
-        printf(" P%d\n", ans[n - 1]);
+        printf(" P%d\n", ans[n]);
     }
 
     return 0;
