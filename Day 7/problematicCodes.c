@@ -39,7 +39,7 @@ int main() {
             need[i][j] = max[i][j] - alloc[i][j];
             if (alloc[i][j] > max[i][j]) {
                 printf("Error: Allocation for process %d exceeds maximum.\n", i);
-                return 1; // Terminate program due to error
+                return 1; // Terminate program
             }
         }
     }
@@ -47,7 +47,7 @@ int main() {
     // Safety Algorithm
     int f[n], ans[n], ind = 0;
     for (k = 0; k < n; k++) {
-        f[k] = 0;
+        f[k] = 0; //no process has been visited
     }
 
     for (k = 0; k < n; k++) {
@@ -61,7 +61,7 @@ int main() {
                     }
                 }
                 if (flag == 0) {
-                    ans[ind++] = i;
+                    ans[ind++] = i; //storing safe sequence
                     for (j = 0; j < m; j++) {
                         available[j] += alloc[i][j];
                     }
