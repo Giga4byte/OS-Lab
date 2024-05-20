@@ -6,28 +6,31 @@
 void FIFO (int pages[], int n, int frames) {
     int frame[MAX_FRAMES];
     int frIndex = 0, pgFault = 0;
+    
     printf ("FIFO Page Replacement Algorithm\n");
     for (int i = 0; i < frames; i++) {
         frame[i] = -1; // frames are empty
     }
     for (int i = 0; i < n; i++) {
-    int page = pages[i];
-    int pgExist = 0;
-    for (int j = 0; j < frames; j++) {
-    if (frame[j] == page)
-    { pgExist = 1; break; }
-    }
-    if (!pgExist)
-    { frame[frIndex] = page;
-    frIndex = (frIndex+1) % frames;
-    pgFault++; }
-    printf ("Page %d: ", page);
-    for (int j = 0; j < frames; j++)
-    { printf ("%d ", frame[j]); }
-    printf ("\n");
+        int page = pages[i];
+        int pgExist = 0;
+        for (int j = 0; j < frames; j++) {
+            if (frame[j] == page)
+            { pgExist = 1; break; }
+        }
+        if (!pgExist)
+            { frame[frIndex] = page;
+              frIndex = (frIndex+1) % frames;
+              pgFault++; }
+        
+        printf ("Page %d: ", page);
+        for (int j = 0; j < frames; j++)
+            { printf ("%d ", frame[j]); }
+        printf ("\n");
     }
     printf ("Total Page Faults: %d\n", pgFault);
 }
+
 void LRU (int pages[], int n, int frames) {
 int frame[MAX_FRAMES];
 int counter[MAX_FRAMES] = { 0 };
