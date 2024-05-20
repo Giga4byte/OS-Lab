@@ -1,273 +1,221 @@
-
-
-/*#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <math.h>
 
-#define MAX_REQUESTS 20
+struct node {
+    int data;
+    struct node *next;
+};
 
-int size;
+struct node *head1 = NULL;
+struct node *head2 = NULL;
+struct node *tail1 = NULL;
+struct node *tail2 = NULL;
+struct node *pointer = NULL;
 
-void FCFS(int arr[], int head)
-{
-    int seek_count = 0;
-    int cur_track, distance;
-
-    for (int i = 0; i < size; i++) {
-        cur_track = arr[i];
-        distance = fabs(head - cur_track);
-        seek_count += distance;
-        head = cur_track;
+void insertEndMem() {
+    struct node *p = (struct node *)malloc(sizeof(struct node));
+    if (!p) {
+        printf("Memory allocation failed\n");
+        exit(1);
     }
-
-    printf("\nTotal distance: %d\n", seek_count);
-
-    printf("SEQUENCE:\n");
-    for (int i = 0; i < size; i++)
-    {
-        printf("%d -> ", arr[i]);
+    scanf("%d", &p->data);
+    p->next = NULL;
+    if (head1 == NULL) {
+        head1 = p;
+        tail1 = p;
+    } else {
+        tail1->next = p;
+        tail1 = p;
     }
-    printf("end of sequence\n");
 }
 
-void SCAN(int arr[], int head, char *direction, int cylinder_range_start, int cylinder_range_end)
-{
-    int flag = 0, seek_count = 0;
-    int distance, cur_track, left[MAX_REQUESTS], right[MAX_REQUESTS];
-    int left_size = 0, right_size = 0;
-    int seek_sequence[MAX_REQUESTS * 2];
-
-    if (strcmp(direction, "left") == 0)
-        left[left_size++] = cylinder_range_start;
-    else if (strcmp(direction, "right") == 0)
-        right[right_size++] = cylinder_range_end;
-
-    for (int i = 0; i < size; i++)
-    {
-        if (arr[i] < head)
-            left[left_size++] = arr[i];
-        if (arr[i] > head)
-            right[right_size++] = arr[i];
+void insertEndProc() {
+    struct node *p = (struct node *)malloc(sizeof(struct node));
+    if (!p) {
+        printf("Memory allocation failed\n");
+        exit(1);
     }
-
-    for (int i = 0; i < left_size - 1; i++)
-    {
-        for (int j = i + 1; j < left_size; j++)
-        {
-            if (left[i] > left[j])
-            {
-                int temp = left[i];
-                left[i] = left[j];
-                left[j] = temp;
-            }
-        }
+    scanf("%d", &p->data);
+    p->next = NULL;
+    if (head2 == NULL) {
+        head2 = p;
+        tail2 = p;
+    } else {
+        tail2->next = p;
+        tail2 = p;
     }
-
-    for (int i = 0; i < right_size - 1; i++)
-    {
-        for (int j = i + 1; j < right_size; j++)
-        {
-            if (right[i] > right[j])
-            {
-                int temp = right[i];
-                right[i] = right[j];
-                right[j] = temp;
-            }
-        }
-    }
-
-    int run = 2;
-    while (run--)
-    {
-        if (strcmp(direction, "left") == 0)
-        {
-            for (int i = left_size - 1; i >= 0; i--)
-            {
-                cur_track = left[i];
-                seek_sequence[flag++] = cur_track;
-                distance = abs(cur_track - head);
-                seek_count += distance;
-                head = cur_track;
-            }
-            direction = "right";
-        }
-        else if (strcmp(direction, "right") == 0)
-        {
-            for (int i = 0; i < right_size; i++)
-            {
-                cur_track = right[i];
-                seek_sequence[flag++] = cur_track;
-                distance = abs(cur_track - head);
-                seek_count += distance;
-                head = cur_track;
-            }
-            direction = "left";
-        }
-    }
-
-    printf("\nTotal distance: %d\n", seek_count);
-    printf("SEQUENCE:\n");
-
-    for (int i = 0; i < left_size + right_size; i++)
-    {
-        printf("%d -> ", seek_sequence[i]);
-    }
-    printf("end of sequence\n");
 }
 
-void CSCAN(int arr[], int head, int cylinder_range_start, int cylinder_range_end)
-{
-    int seek_count = 0;
-    int distance, cur_track;
-    int left[MAX_REQUESTS], right[MAX_REQUESTS];
-    int left_size = 0, right_size = 0;
-    int seek_sequence[MAX_REQUESTS * 2];
-
-    left[left_size++] = cylinder_range_start;
-    right[right_size++] = cylinder_range_end;
-
-    for (int i = 0; i < size; i++)
-    {
-        if (arr[i] < head)
-            left[left_size++] = arr[i];
-        if (arr[i] > head)
-            right[right_size++] = arr[i];
-    }
-
-    for (int i = 0; i < left_size - 1; i++)
-    {
-        for (int j = i + 1; j < left_size; j++)
-        {
-            if (left[i] > left[j])
-            {
-                int temp = left[i];
-                left[i] = left[j];
-                left[j] = temp;
-            }
+void displayMem() {
+    if (head1 == NULL) {
+        printf("LIST IS EMPTY\n");
+    } else {
+        pointer = head1;
+        while (pointer != NULL) {
+            printf("%d ", pointer->data);
+            pointer = pointer->next;
         }
     }
-
-    for (int i = 0; i < right_size - 1; i++)
-    {
-        for (int j = i + 1; j < right_size; j++)
-        {
-            if (right[i] > right[j])
-            {
-                int temp = right[i];
-                right[i] = right[j];
-                right[j] = temp;
-            }
-        }
-    }
-
-    for (int i = 0; i < right_size; i++)
-    {
-        cur_track = right[i];
-        seek_sequence[i] = cur_track;
-        distance = abs(cur_track - head);
-        seek_count += distance;
-        head = cur_track;
-    }
-
-    head = 0;
-    seek_count += (cylinder_range_end - cylinder_range_start);
-
-    for (int i = 0; i < left_size; i++)
-    {
-        cur_track = left[i];
-        seek_sequence[right_size + i] = cur_track;
-        distance = abs(cur_track - head);
-        seek_count += distance;
-        head = cur_track;
-    }
-
-    printf("\nTotal distance: %d\n", seek_count);
-    printf("SEQUENCE:\n");
-
-    for (int i = 0; i < right_size + left_size; i++)
-    {
-        printf("%d -> ", seek_sequence[i]);
-    }
-    printf("end of sequence\n");
+    printf("\n");
 }
 
-int main()
-{
-    int ch, head, arr[MAX_REQUESTS];
-    char direction[10];
-    int cylinder_range_start, cylinder_range_end;
-    
-    printf ("MENU OF OPERATIONS:\n1.FCFS  2. SCAN  3. C-SCAN\n");
-    
-    do
-    {
-        printf("\nEnter your option: ");
-        scanf("%d", &ch);
-        printf("\n");
-        switch (ch) {
-			case 1:
-			{
-				printf("Enter head value: ");
-				scanf("%d", &head);
-				printf("Enter the number of values: ");
-				scanf("%d", &size);
-				printf("Enter the values: ");
-				for (int i = 0; i < size; i++)
-				{ scanf("%d", &arr[i]); }
-				
-				FCFS(arr, head);
+void displayProc() {
+    if (head2 == NULL) {
+        printf("LIST IS EMPTY\n");
+    } else {
+        pointer = head2;
+        while (pointer != NULL) {
+            printf("%d ", pointer->data);
+            pointer = pointer->next;
+        }
+    }
+    printf("\n");
+}
 
-				break;
-			}
+void linkedToArrayMem(int array[], int size) {
+    if (head1 == NULL) {
+        printf("LIST IS EMPTY\n");
+        return;
+    }
+    pointer = head1;
+    int i = 0;
+    while (pointer != NULL && i < size) {
+        array[i] = pointer->data;
+        pointer = pointer->next;
+        i++;
+    }
+}
 
-			case 2:
-			{
-				printf("Enter head value: ");
-				scanf("%d", &head);
-				printf("Enter the number of values: ");
-				scanf("%d", &size);
-				printf("Enter the values: ");
-				for (int i = 0; i < size; i++)
-				{ scanf("%d", &arr[i]); }
+void linkedToArrayProc(int array[], int size) {
+    if (head2 == NULL) {
+        printf("LIST IS EMPTY\n");
+        return;
+    }
+    pointer = head2;
+    int i = 0;
+    while (pointer != NULL && i < size) {
+        array[i] = pointer->data;
+        pointer = pointer->next;
+        i++;
+    }
+}
 
-				printf("Enter the direction (left/right): ");
-				scanf("%s", direction);
-				printf("Enter the start and end cylinders: ");
-				scanf("%d%d", &cylinder_range_start, &cylinder_range_end);
-				
-				SCAN(arr, head, direction, cylinder_range_start, cylinder_range_end);
+void bubbleSortAsc(int n, int a[]) {
+    int i, j, temp;
+    for (i = 0; i < n - 1; i++) {
+        for (j = 0; j < n - 1 - i; j++) {
+            if (a[j] > a[j + 1]) {
+                temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+            }
+        }
+    }
+    for (i = 0; i < n; i++) {
+        printf("%d ", a[i]);
+    }
+    printf("\n");
+}
 
-				break;
-			}
+void bubbleSortDesc(int n, int a[]) {
+    int i, j, temp;
+    for (i = 0; i < n - 1; i++) {
+        for (j = 0; j < n - 1 - i; j++) {
+            if (a[j] < a[j + 1]) {
+                temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+            }
+        }
+    }
+    for (i = 0; i < n; i++) {
+        printf("%d ", a[i]);
+    }
+    printf("\n");
+}
 
-			case 3:
-			{
-				printf("Enter head value: ");
-				scanf("%d", &head);
-				printf("Enter the number of values: ");
-				scanf("%d", &size);
-				printf("Enter the values: ");
-				for (int i = 0; i < size; i++)
-				{ scanf("%d", &arr[i]); }
+void fitting(int memory[], int process[], int n, int m) {
+    int alloc[m];
+    for (int i = 0; i < m; i++) {
+        alloc[i] = 0; // initializing it to 0
+    }
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (memory[j] >= process[i] && alloc[i] == 0) {
+                alloc[i] = j;
+                memory[j] -= process[i]; // find the rem mem
+                break;
+            }
+        }
+    }
+    printf("PROCESS ALLOCATION:\n");
+    for (int i = 0; i < m; i++) {
+        if (alloc[i] != 0) {
+            printf("Process %d allocated to Block %d\n", i, alloc[i]);
+        } else {
+            printf("Process %d cannot be allocated\n", i);
+        }
+    }
+}
 
-				printf("Enter the start and end cylinders: ");
-				scanf("%d%d", &cylinder_range_start, &cylinder_range_end);
-				
-				CSCAN(arr, head, cylinder_range_start, cylinder_range_end);
+int main() {
+    int n, m;
+    printf("Enter the number of memory partitions: ");
+    scanf("%d", &n);
+    printf("Enter the number of processes: ");
+    scanf("%d", &m);
 
-				break;
-			}
-			   
-			case 4:
-			{
-				printf("Exiting program...\n");
-				return 0;
-			}
-			   
-			}
+    int memory[n];
+    printf("\nEnter the sizes of memory partition\n");
+    for (int i = 0; i < n; i++) {
+        insertEndMem();
+    }
+    printf("Memory partitions: ");
+    displayMem();
+    linkedToArrayMem(memory, n);
 
-			} while (ch != 4);
+    int process[m];
+    printf("Enter the sizes of processes\n");
+    for (int i = 0; i < m; i++) {
+        insertEndProc();
+    }
+    printf("Processes: ");
+    displayProc();
+    linkedToArrayProc(process, m);
 
+    printf("\nMENU:\n1. First Fit\n2. Best Fit\n3. Worst Fit\n4. Exit\n");
+    int choice;
+    while (1) {
+        printf("\nEnter your choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                fitting(memory, process, n, m);
+                printf("FIRST FIT ALLOCATION - COMPLETE!\n");
+                break;
+            case 2:
+                printf("Mem in Ascending order: ");
+                bubbleSortAsc(n, memory);
+                printf("Process in Ascending order: ");
+                bubbleSortAsc(m, process);
+                fitting(memory, process, n, m);
+                printf("BEST FIT ALLOCATION - COMPLETE!\n");
+                break;
+            case 3:
+                printf("Mem in Descending order: ");
+                bubbleSortDesc(n, memory);
+                printf("Process in Ascending order: ");
+                bubbleSortAsc(m, process);
+                fitting(memory, process, n, m);
+                printf("WORST FIT ALLOCATION - COMPLETE!\n");
+                break;
+            case 4:
+                printf("Exiting the execution\n");
+                return 0;
+            default:
+                printf("Wrong choice, choose again\n");
+                break;
+        }
+    }
     return 0;
-} */
+}
