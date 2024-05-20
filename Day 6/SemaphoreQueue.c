@@ -1,5 +1,3 @@
-/* doesn't satisfy a few conditions of the code to be implemented in the lab, don't copy. It's wrong */
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
