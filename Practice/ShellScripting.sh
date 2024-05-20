@@ -1,13 +1,13 @@
 #!/bin/sh
 
-# greeting.sh
+#greeting.sh
 echo "What is your name?"
 read name
 echo "How are you, $name?"
 read remark
 echo "I am $remark too"
 
-# factorial.sh
+#factorial.sh
 echo "Enter a number: "
 read factnum
 FACT=1
@@ -16,11 +16,11 @@ for ((i=1; i<=($factnum); i++))
 done
 echo "$FACT is the factorial of $factnum"
 
-# reverse.sh
+#reverse.sh
 echo "Enter a number: "
 read revnum
 DIG=0; REV=0;
-while [$revnum != 0]
+while [ $revnum != 0 ]
 do
   DIG=$((revnum%10))
   REV=$((REV*10+DIG))
@@ -28,12 +28,12 @@ do
 done
 echo "$REV is the reverse of $revnum"
 
-# armstrong.sh
+#armstrong.sh
 echo "Enter a number: "\
 read armstrong
 i=$armstrong; DIG=0; SUM=0; CUBE=0;
 
-while [$i -ne 0]
+while [ $i -ne 0 ]
 do
   DIG=$((armstrong % 10))
   CUBE=$((DIG * DIG * DIG))
@@ -47,3 +47,17 @@ then
 else
   echo -n "$armstrong is not an armstrong number"
 fi
+
+#sumOfDig.sh
+echo "Enter a number: "
+read sumofdig
+i=$sumofdig; FLAG=0; SUM=0; DIG=0;
+
+while [ $i -ne 0 ]
+do
+  DIG=$((i % 10))
+  SUM=$((SUM + DIG))
+  i=$((i / 10))
+done
+
+echo "$SUM is the sum of digits of $sumofdig"
